@@ -1,0 +1,116 @@
+# ==========================================
+# Python
+# ==========================================
+
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environment
+.venv/
+venv/
+env/
+ENV/
+
+# Environment variables / secrets
+.env
+.env.*
+!.env.example
+
+# ==========================================
+# Jupyter Notebook
+# ==========================================
+
+.ipynb_checkpoints/
+
+# ==========================================
+# IDE / Editor
+# ==========================================
+
+.vscode/
+.idea/
+
+# ==========================================
+# OS generated files
+# ==========================================
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+
+# ==========================================
+# Data
+# ==========================================
+
+# Raw / large datasets
+data/raw/
+data/processed/
+
+# Dataset files
+*.csv
+*.xlsx
+*.xls
+*.parquet
+*.feather
+
+# ==========================================
+# Machine Learning
+# ==========================================
+
+# Trained models / checkpoints
+models/
+*.pkl
+*.pickle
+*.joblib
+*.h5
+*.keras
+*.pt
+*.pth
+*.onnx
+
+# ==========================================
+# Experiment outputs
+# ==========================================
+
+outputs/
+results/
+logs/
+runs/
+
+# ==========================================
+# Research papers
+# ==========================================
+
+# PDF research papers
+research/
+*.pdf
+
+# ==========================================
+# Temporary files
+# ==========================================
+
+*.tmp
+*.temp
+*.log
+*.bak
+
+# ==========================================
+# Python build files
+# ==========================================
+
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# ==========================================
+# Testing / Coverage
+# ==========================================
+
+.pytest_cache/
+.coverage
+htmlcov/

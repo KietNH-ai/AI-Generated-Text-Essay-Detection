@@ -336,9 +336,7 @@ The project's research literature is stored in:
 
 ```text
 research/
-├── 2024/
-├── 2025/
-└── 2026/
+└── references.md
 ```
 
 The collected papers are used to identify existing approaches, limitations, research gaps, datasets, features, and evaluation methods.
