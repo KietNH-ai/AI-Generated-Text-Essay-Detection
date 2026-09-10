@@ -356,9 +356,7 @@ AI-Generated-Text-Detection/
 │   └── external/
 │
 ├── research/
-│   ├── 2024/
-│   ├── 2025/
-│   └── 2026/
+│   └── references.md
 │
 ├── notebooks/
 │   ├── 01_data_exploration.ipynb
