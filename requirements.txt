@@ -1,0 +1,40 @@
+# ==========================================
+# AI-Generated Text (Essay) Detection
+# Python 3.10+
+# ==========================================
+
+# --- Data Processing ---
+pandas>=2.2.0
+numpy>=1.26.0
+
+# --- Natural Language Processing ---
+nltk>=3.9.0
+
+# --- Machine Learning ---
+scikit-learn>=1.5.0
+scipy>=1.13.0
+
+# --- Transformer / NLP Models ---
+transformers>=4.45.0
+sentence-transformers>=3.0.0
+torch>=2.4.0
+
+# --- Visualization ---
+matplotlib>=3.9.0
+seaborn>=0.13.0
+
+# --- Model Saving / Loading ---
+joblib>=1.4.0
+
+# --- Jupyter Notebook ---
+jupyter>=1.1.0
+ipykernel>=6.29.0
+
+# --- Progress Bar ---
+tqdm>=4.66.0
+
+# --- Environment Variables ---
+python-dotenv>=1.0.1
+
+# --- Optional Web Demo ---
+streamlit>=1.38.0
