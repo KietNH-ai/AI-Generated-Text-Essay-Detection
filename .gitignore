@@ -7,16 +7,6 @@ __pycache__/
 *$py.class
 *.so
 
-# Virtual environment
-.venv/
-venv/
-env/
-ENV/
-
-# Environment variables / secrets
-.env
-.env.*
-!.env.example
 
 # ==========================================
 # Jupyter Notebook
@@ -43,21 +33,6 @@ Desktop.ini
 .DS_Store
 
 # ==========================================
-# Data
-# ==========================================
-
-# Raw / large datasets
-data/raw/
-data/processed/
-
-# Dataset files
-*.csv
-*.xlsx
-*.xls
-*.parquet
-*.feather
-
-# ==========================================
 # Machine Learning
 # ==========================================
 
@@ -80,14 +55,6 @@ outputs/
 results/
 logs/
 runs/
-
-# ==========================================
-# Research papers
-# ==========================================
-
-# PDF research papers
-research/
-*.pdf
 
 # ==========================================
 # Temporary files
