@@ -60,7 +60,7 @@ from sklearn.metrics import (
 
 # XGBoost
 try:
-    import xgboost as xgb
+    import xgboost as xgb 
     XGBOOST_AVAILABLE = True
 except ImportError:
     XGBOOST_AVAILABLE = False
