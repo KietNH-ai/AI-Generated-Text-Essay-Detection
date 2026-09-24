@@ -8,3 +8,4 @@ PROCESSED_DATA_DIR = DATA_DIR / "processed"
 
 RAW_DATA_FILE = RAW_DATA_DIR / "raw_data.csv"
 PROCESSED_DATA_FILE = PROCESSED_DATA_DIR / "processed_data.csv"
+FEATURE_DATA_FILE = PROCESSED_DATA_DIR / "data_with_features.csv"
