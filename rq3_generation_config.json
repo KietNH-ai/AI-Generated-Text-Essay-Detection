@@ -1,0 +1,128 @@
+{
+  "seed": 391,
+  "samples_per_model": 5,
+  "min_words": 400,
+  "max_words": 600,
+  "default_requests_per_minute": 6,
+  "generation_prompt_template": "Write an English argumentative essay responding to the task below.\n\nEssay task/topic:\n{prompt_text}\n\nRequirements:\n- Write approximately {min_words}-{max_words} words.\n- Use a clear introduction, body paragraphs, and conclusion.\n- Write naturally as a student essay.\n- Do not mention being an AI or describe these instructions.\n- Return only the essay, with no title or commentary.",
+  "retry": {
+    "max_attempts": 5,
+    "base_delay_seconds": 2.0,
+    "max_delay_seconds": 30.0,
+    "jitter_seconds": 1.0
+  },
+  "output": {
+    "csv": "data/rq3/generated_essays.csv",
+    "raw_jsonl": "data/rq3/generated_essays_raw.jsonl"
+  },
+  "models": [
+    {
+      "enabled": true,
+      "provider": "openai",
+      "model_family": "GPT",
+      "model": "gpt-5.6-luna",
+      "api_key_env": "OPENAI_API_KEY",
+      "temperature": null,
+      "max_output_tokens": 1400,
+      "requests_per_minute": 6
+    },
+    {
+      "enabled": true,
+      "provider": "anthropic",
+      "model_family": "Claude",
+      "model": "claude-sonnet-4-6",
+      "api_key_env": "ANTHROPIC_API_KEY",
+      "temperature": null,
+      "max_output_tokens": 1400,
+      "requests_per_minute": 6
+    },
+    {
+      "enabled": true,
+      "provider": "google",
+      "model_family": "Gemini",
+      "model": "gemini-3.8-flash",
+      "api_key_env": "GEMINI_API_KEY",
+      "temperature": 0.8,
+      "max_output_tokens": 1400,
+      "requests_per_minute": 6
+    }
+  ],
+  "prompts": [
+    {
+      "prompt_id": "P01",
+      "prompt_name": "Phones and driving",
+      "prompt_text": "Phones and driving"
+    },
+    {
+      "prompt_id": "P02",
+      "prompt_name": "Car-free cities",
+      "prompt_text": "Car-free cities"
+    },
+    {
+      "prompt_id": "P03",
+      "prompt_name": "Cell phones at school",
+      "prompt_text": "Cell phones at school"
+    },
+    {
+      "prompt_id": "P04",
+      "prompt_name": "Distance learning",
+      "prompt_text": "Distance learning"
+    },
+    {
+      "prompt_id": "P05",
+      "prompt_name": "Driverless cars",
+      "prompt_text": "Driverless cars"
+    },
+    {
+      "prompt_id": "P06",
+      "prompt_name": "Seeking multiple opinions",
+      "prompt_text": "Seeking multiple opinions"
+    },
+    {
+      "prompt_id": "P07",
+      "prompt_name": "Does the electoral college work?",
+      "prompt_text": "Does the electoral college work?"
+    },
+    {
+      "prompt_id": "P08",
+      "prompt_name": "Facial action coding system",
+      "prompt_text": "Facial action coding system"
+    },
+    {
+      "prompt_id": "P09",
+      "prompt_name": "Mandatory extracurricular activities",
+      "prompt_text": "Mandatory extracurricular activities"
+    },
+    {
+      "prompt_id": "P10",
+      "prompt_name": "Summer projects",
+      "prompt_text": "Summer projects"
+    },
+    {
+      "prompt_id": "P11",
+      "prompt_name": "Exploring Venus",
+      "prompt_text": "Exploring Venus"
+    },
+    {
+      "prompt_id": "P12",
+      "prompt_name": "Grades for extracurricular activities",
+      "prompt_text": "Grades for extracurricular activities"
+    },
+    {
+      "prompt_id": "P13",
+      "prompt_name": "Community service",
+      "prompt_text": "Community service"
+    },
+    {
+      "prompt_id": "P14",
+      "prompt_name": "\"A Cowboy Who Rode the Waves\"",
+      "prompt_text": "\"A Cowboy Who Rode the Waves\""
+    },
+    {
+      "prompt_id": "P15",
+      "prompt_name": "The Face on Mars",
+      "prompt_text": "The Face on Mars"
+    }
+  ],
+  "samples_per_prompt_per_model": 5
+}
