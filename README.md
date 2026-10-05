@@ -98,7 +98,7 @@ The models are evaluated and compared using:
                        Data Cleaning
                               │
                               ▼
-                    Train / Test Split
+                        Train / Test Split
                           80% / 20%
                               │
                  ┌────────────┴────────────┐
