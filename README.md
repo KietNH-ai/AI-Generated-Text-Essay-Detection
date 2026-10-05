@@ -1,446 +1,161 @@
-# AI-Generated Text (Essay) Detection
+# AI-Generated Text Essay Detection
 
 ## 1. Project Overview
 
-The rapid development of Large Language Models (LLMs) such as ChatGPT has made AI-generated text increasingly difficult to distinguish from human-written text. This creates challenges in academic integrity, authorship verification, and the evaluation of student writing.
+This project focuses on detecting AI-generated essays by comparing traditional machine learning and transformer-based approaches.
 
-This project investigates methods for detecting AI-generated essays and identifying linguistic characteristics that distinguish human-written and AI-generated texts.
+The project investigates two main approaches:
 
-The project combines traditional machine learning, linguistic/stylometric features, and transformer-based models to evaluate their effectiveness in AI-generated essay detection.
+* **Traditional Machine Learning**
+* **Transformer-Based Models**
+
+The models are trained and evaluated to distinguish between human-written and AI-generated text.
 
 ---
 
-## 2. Research Objectives
+## 2. Dataset
 
-The main objectives of this project are:
+The dataset contains human-written and AI-generated essays.
 
-* Identify linguistic features that can distinguish human-written essays from LLM-generated essays.
-* Compare traditional machine learning approaches with transformer-based approaches.
-* Evaluate the generalization ability of AI-text detection models across different datasets and writing topics.
-* Investigate the reliability and limitations of AI-generated text detection.
+The dataset is divided into:
+
+* **80% Training Set**
+* **20% Testing Set**
+
+The split is performed before the model-specific text representation and encoding steps.
 
 ---
 
 ## 3. Research Questions
 
-The project is guided by the following research questions:
-
 ### RQ1
 
-**Which linguistic features (sentence length, vocabulary diversity, and perplexity) most clearly distinguish human-written essays from LLM-generated essays?**
+Which linguistic features (sentence length, vocabulary diversity, and perplexity) most clearly distinguish human-written essays from LLM-generated essays?
 
 ### RQ2
 
-**Which model (TF-IDF + LightGBM/XGBoost versus fine-tuned DistilBERT/RoBERTa) achieves the highest accuracy in detecting AI-generated text?**
+Which model (TF-IDF + LightGBM/XGBoost versus fine-tuned DistilBERT/RoBERTa) achieves the highest accuracy in detecting AI-generated text?
 
 ### RQ3
 
-**How well does a model trained on text from a specific source or dataset generalize when evaluated on different datasets or writing topics?**
-
-These questions allow the project to examine both **feature-level differences** and **model-level performance**, while also addressing one of the major limitations of AI-text detectors: poor generalization to unseen data.
+How well does a model trained on text from a specific source or dataset generalize when evaluated on different datasets or writing topics?
 
 ---
 
-## 4. Research Direction
+## 4. Methodology
 
-The project follows three main research directions.
+### 4.1 Data Processing
 
-### 4.1 Linguistic Feature Analysis
+The dataset is first cleaned and divided into training and testing sets using an **80/20 split**.
 
-The project investigates characteristics such as:
-
-* Sentence length
-* Word length
-* Vocabulary diversity
-* Lexical richness
-* Repetition
-* Punctuation patterns
-* Part-of-speech distributions
-* Perplexity
-* Other stylometric characteristics
-
-The purpose is to determine which features provide the strongest evidence for distinguishing human-written and AI-generated essays.
+After splitting the data, each modeling approach applies its own text processing method.
 
 ### 4.2 Model Comparison
 
-The project compares two groups of machine learning models for AI-generated text detection.
+The project evaluates two groups of models.
 
-**Traditional Machine Learning**
+#### Traditional Machine Learning
 
-Text is converted into numerical features using TF-IDF and linguistic/stylometric features. Five traditional machine learning models are evaluated:
+Text is converted into numerical representations using **TF-IDF and linguistic/stylometric features**.
+
+Five traditional machine learning models are evaluated:
 
 * Logistic Regression
 * Random Forest
+* SVM
 * XGBoost
 * LightGBM
-* CatBoost
 
-**Transformer-Based Models**
+#### Transformer-Based Models
 
-Text is tokenized and processed using pre-trained transformer models. Four transformer models are evaluated:
+Text is tokenized and processed using pre-trained transformer models.
+
+Four transformer models are evaluated:
 
 * DistilBERT
 * RoBERTa
 * ModernBERT
 * DeBERTa-V3
 
-The performance of all models is compared using standard classification metrics.
+### 4.3 Model Evaluation
 
----
-
-## 5. Dataset
-
-The project uses essay/text datasets containing combinations of:
-
-* Human-written essays
-* AI-generated essays
-* Essays generated by different LLMs
-* Different academic topics or domains
-
-The dataset preparation process includes:
-
-1. Collecting human-written and AI-generated texts.
-2. Removing invalid or unusable samples.
-3. Cleaning text while preserving meaningful linguistic characteristics.
-4. Assigning appropriate labels.
-5. Performing exploratory data analysis.
-6. Splitting the data into training and testing sets.
-7. Preventing data leakage between the two sets.
-
-### Train/Test Split
-
-The current experimental pipeline uses an **80/20 train-test split**:
-
-| Dataset Split | Proportion |
-| ------------- | ---------: |
-| Training Set  |        80% |
-| Test Set      |        20% |
-
-The test set is kept separate from model training and is used for final model evaluation.
-
----
-
-## 6. Data Processing Pipeline
-
-The implemented pipeline follows the general workflow below:
-
-```text
-Raw Essays
-    │
-    ▼
-Data Collection
-    │
-    ▼
-Data Cleaning
-    │
-    ▼
-Exploratory Data Analysis
-    │
-    ▼
-80% Train / 20% Test Split
-    │
-    ├───────────────────────┐
-    │                       │
-    ▼                       ▼
-Traditional ML          Transformer
-    │                       │
-    ▼                       ▼
-Vectorization           Tokenization
-    │                       │
-    ▼                       ▼
-TF-IDF + Features      Transformer Models
-    │                       │
-    ▼                       ├── DistilBERT
-LightGBM                 ├── RoBERTa
-XGBoost                  ├── ModernBERT
-    │                    └── DeBERTa-V3
-    │                       │
-    └───────────┬───────────┘
-                ▼
-         Model Evaluation
-                │
-                ▼
-      Model Comparison
-                │
-                ▼
-    Error & Generalization
-           Analysis
-```
-
-The two branches use different text representations:
-
-* **Traditional ML:** vectorized text and engineered linguistic/stylometric features.
-* **Transformer models:** tokenized text processed by fine-tuned transformer architectures.
-
----
-
-## 7. Features
-
-### 7.1 TF-IDF Features
-
-TF-IDF is used to represent the importance of words or n-grams within the corpus.
-
-It provides a strong and computationally efficient baseline for traditional machine learning models.
-
-### 7.2 Linguistic Features
-
-Examples include:
-
-| Feature              | Description                                                        |
-| -------------------- | ------------------------------------------------------------------ |
-| Sentence Length      | Average number of words per sentence                               |
-| Word Length          | Average number of characters per word                              |
-| Vocabulary Diversity | Degree of lexical variation                                        |
-| Type-Token Ratio     | Ratio between unique and total words                               |
-| Sentence Variation   | Variation in sentence lengths                                      |
-| Punctuation          | Frequency and distribution of punctuation                          |
-| Repetition           | Repeated words or phrases                                          |
-| Perplexity           | Measure related to how predictable the text is to a language model |
-
-These features are used to investigate which linguistic characteristics are most useful for AI-text detection.
-
----
-
-## 8. Models
-
-The project evaluates both traditional machine learning and transformer-based approaches.
-
-| Category       | Model          | Description                                                                                              |
-| -------------- | -------------- | -------------------------------------------------------------------------------------------------------- |
-| Traditional ML | **LightGBM**   | Gradient-boosting model used for classification with numerical text and linguistic features.             |
-| Traditional ML | **XGBoost**    | Gradient-boosting model used as a traditional machine learning baseline.                                 |
-| Transformer    | **DistilBERT** | Lightweight transformer model with reduced computational requirements.                                   |
-| Transformer    | **RoBERTa**    | Transformer encoder designed for strong contextual language representation.                              |
-| Transformer    | **ModernBERT** | Modern encoder-based transformer evaluated for classification performance and efficiency.                |
-| Transformer    | **DeBERTa-V3** | Transformer architecture with enhanced contextual representations and disentangled attention mechanisms. |
-
-The four transformer models are fine-tuned for binary classification of human-written and AI-generated essays.
-
----
-
-## 9. Model Training
-
-The transformer branch follows the general workflow:
-
-```text
-Training Text
-     │
-     ▼
-Tokenizer
-     │
-     ▼
-Tokenized Dataset
-     │
-     ▼
-Pre-trained Transformer
-     │
-     ▼
-Fine-tuning
-     │
-     ▼
-Binary Classification
-     │
-     ▼
-Trained Model
-```
-
-The models are trained to classify text into:
-
-* Human-written
-* AI-generated
-
-The trained models are then evaluated on the held-out test set.
-
----
-
-## 10. Evaluation Metrics
-
-Because AI-text detection is a classification problem with potentially significant consequences from false predictions, accuracy alone is not sufficient.
-
-The project evaluates models using:
+The models are evaluated and compared using:
 
 * Accuracy
 * Precision
 * Recall
 * F1-score
 * ROC-AUC
-* Confusion Matrix
-
-### Metric Interpretation
-
-**Accuracy**
-
-Measures the proportion of correctly classified samples.
-
-**Precision**
-
-Measures how many texts predicted as AI-generated are actually AI-generated.
-
-**Recall**
-
-Measures how many actual AI-generated texts are successfully detected.
-
-**F1-score**
-
-Balances precision and recall.
-
-**ROC-AUC**
-
-Measures the model's ability to distinguish between human-written and AI-generated texts across different classification thresholds.
-
-The project reports multiple metrics rather than relying on a single score because an AI detector with high accuracy can still produce unacceptable false positives.
 
 ---
 
-## 11. Model Comparison Results
-
-The current transformer experiments compare:
-
-* DistilBERT
-* RoBERTa
-* ModernBERT
-* DeBERTa-V3
-
-The reported results show that all four models achieve very strong classification performance, with ROC-AUC values approaching 1.
-
-The current comparison indicates:
-
-* **ModernBERT** achieves the highest Accuracy, Precision, and F1-score.
-* **DeBERTa-V3** achieves the highest ROC-AUC and is the fastest model in the reported comparison.
-* **RoBERTa** achieves particularly strong Recall.
-* **DistilBERT** provides a lightweight transformer alternative.
-
-Runtime is also considered as part of the model comparison because predictive performance is not the only factor when selecting a practical detection model.
-
----
-
-## 12. False Positive and Error Analysis
-
-A major concern of this project is the possibility of incorrectly classifying human-written essays as AI-generated.
-
-This can happen when human writing contains linguistic patterns that resemble AI-generated text, such as:
-
-* Highly formal language
-* Consistent sentence structure
-* Low grammatical error rates
-* Repetitive academic expressions
-* High vocabulary regularity
-* Predictable writing patterns
-
-Therefore, model evaluation considers both:
-
-* **False positives:** human essays classified as AI
-* **False negatives:** AI essays classified as human
-
-The objective is not simply to maximize classification accuracy but also to understand when and why the detector fails.
-
----
-
-## 13. RQ3 Generalization Experiments
-
-The project investigates generalization beyond the data used for model development.
-
-The RQ3 experiments examine whether a model trained on text from a specific source or dataset can maintain its performance when evaluated on different data distributions.
-
-Potential distribution changes include:
-
-* Different datasets
-* Different writing topics
-* Different LLMs
-* Different generation methods
-* Different writing styles
-
-This evaluation is important because a detector can achieve very high performance on a standard test set while still having limited robustness when encountering unseen text.
-
----
-
-## 14. External LLM Text Generation
-
-To support generalization experiments, the repository includes an external essay-generation pipeline.
-
-The generation framework is designed to generate essays using LLM APIs and create additional evaluation data.
-
-The current generation workflow supports API-based generation from multiple providers, including:
-
-* OpenAI
-* Anthropic
-* Google
-
-The generation pipeline includes functionality for:
-
-* Multiple models
-* Multiple prompts
-* Retry handling
-* Rate limiting
-* API usage tracking
-* Generation metadata
-* Resumable generation
-* Error handling
-
-Generated essays can be used as external evaluation data for studying model generalization.
-
----
-
-## 15. External Generation Pipeline
+## 5. Project Pipeline
 
 ```text
-Essay Topics / Prompts
-          │
-          ▼
-     LLM Providers
-     ┌────┼─────┐
-     │    │     │
-  OpenAI Anthropic Google
-     │    │     │
-     └────┼─────┘
-          │
-          ▼
-   Generated Essays
-          │
-          ▼
- External Evaluation Data
-          │
-          ▼
-    Trained Detector
-          │
-          ▼
- Generalization Results
+                                                 Input Dataset
+                              │
+                              ▼
+                       Data Cleaning
+                              │
+                              ▼
+                    Train / Test Split
+                          80% / 20%
+                              │
+                 ┌────────────┴────────────┐
+                 │                         │
+                 ▼                         ▼
+          Traditional ML             Transformer-Based
+                 │                         │
+                 ▼                         ▼
+          Vectorized Data            Tokenized Data
+                 │                         │
+                 ├──→ Logistic             ├──→ DistilBERT  
+                 ├──→ Random Forest        ├──→ RoBERTa     
+                 ├──→ SVM                  ├──→ ModernBERT  
+                 ├──→ XGBoost              ├──→ DeBERTa-V3  
+                 ├──→ LightGBM             |
+                 │                         │
+                 └────────────┬────────────┘
+                              ▼
+                       Model Evaluation
 ```
 
-The generated data is stored together with relevant metadata to support traceability and reproducibility.
+---
+
+## 6. Models
+
+| Approach       | Models              |
+| -------------- | ------------------- |
+| Traditional ML | Logistic Regression |
+| Traditional ML | Random Forest       |
+| Traditional ML | SVM                 |
+| Traditional ML | XGBoost             |
+| Traditional ML | LightGBM            |
+| Transformer    | DistilBERT          |
+| Transformer    | RoBERTa             |
+| Transformer    | ModernBERT          |
+| Transformer    | DeBERTa-V3          |
 
 ---
 
-## 16. Research Literature
+## 7. RQ3 Data Generation
 
-The project is supported by recent research on AI-generated text detection.
+The project includes an API-based text generation pipeline to support RQ3.
 
-The literature review focuses on:
+The pipeline is used to generate AI-written essays from multiple LLM providers and includes:
 
-* AI-generated essay detection
-* Stylometric analysis
-* Linguistic fingerprints
-* LLM-generated text detection
-* Student essay detection
-* Cross-domain and cross-dataset generalization
-* Adversarial robustness
-* Human–LLM co-authored text
-* AI-text detection limitations
+* API-based text generation
+* Retry and error handling
+* Rate limiting
+* Generation metadata
+* Usage tracking
+* Resumable generation
 
-The collected literature is used to identify:
-
-* Existing approaches
-* Research gaps
-* Datasets
-* Linguistic features
-* Evaluation methods
-* Limitations of current AI-text detectors
+The generated texts can be used to evaluate model generalization across different sources and writing topics.
 
 ---
 
-## 17. Project Structure
-
-The repository is organized into data, documentation, experiments, source code, and RQ3 generation components.
+## 8. Repository Structure
 
 ```text
 AI-Generated-Text-Essay-Detection/
@@ -459,152 +174,20 @@ AI-Generated-Text-Essay-Detection/
 └── .gitignore
 ```
 
-### Main Components
-
-| Component                    | Purpose                                  |
-| ---------------------------- | ---------------------------------------- |
-| `data/`                      | Dataset and processed data               |
-| `docs/`                      | Project documentation                    |
-| `notebooks/`                 | Data analysis and model experiments      |
-| `src/`                       | Source code for the implemented pipeline |
-| `generate_rq3_essays.py`     | External LLM essay generation            |
-| `rq3_generation_config.json` | Configuration for external generation    |
-| `requirements.txt`           | Main project dependencies                |
-| `requirements_rq3_api.txt`   | Dependencies for API-based generation    |
-
 ---
 
-## 18. Installation
-
-Clone the repository:
-
-```bash
-git clone https://github.com/KietNH-ai/AI-Generated-Text-Essay-Detection.git
-cd AI-Generated-Text-Essay-Detection
-```
-
-Create a virtual environment:
-
-```bash
-python -m venv .venv
-```
-
-Activate the environment on Windows:
-
-```bash
-.venv\Scripts\activate
-```
-
-Install the main dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
-For the external LLM generation pipeline:
-
-```bash
-pip install -r requirements_rq3_api.txt
-```
-
----
-
-## 19. Reproducibility
-
-To reproduce the main experiments:
-
-1. Install the required Python dependencies.
-2. Prepare the datasets.
-3. Run the preprocessing pipeline.
-4. Perform exploratory data analysis.
-5. Create the 80/20 train-test split.
-6. Extract TF-IDF and linguistic features for traditional machine learning.
-7. Train the LightGBM and XGBoost models.
-8. Tokenize the text for transformer models.
-9. Fine-tune the transformer models.
-10. Evaluate all models using the held-out test set.
-11. Compare the results using the defined evaluation metrics.
-12. Perform error and generalization analysis.
-
-For external LLM generation:
-
-1. Configure the required API credentials.
-2. Configure the generation settings.
-3. Run the RQ3 generation pipeline.
-4. Store the generated essays and associated metadata.
-5. Use the generated data for external evaluation.
-
-API keys should not be committed to the repository.
-
----
-
-## 20. Limitations
-
-### Model and Dataset Dependence
-
-A detector may perform well on the data used during development but perform poorly on text generated by previously unseen models or prompts.
-
-### False Positives
-
-Human-written text can contain linguistic patterns that resemble AI-generated text.
-
-### LLM Evolution
-
-As LLMs become more capable, their generated text may become increasingly similar to human writing.
-
-### Human–AI Co-authorship
-
-An essay can contain both human-written and AI-assisted content, making binary classification insufficient for some real-world cases.
-
-### Detection Is Not Proof of Authorship
-
-A prediction from an AI detector should not be interpreted as definitive evidence that a specific person did or did not use AI.
-
----
-
-## 21. Team
-
-| Member              | Role                   |
-| ------------------- | ---------------------- |
-| Nguyễn Hữu Kiệt     | Research & Development |
-| Nguyễn Hoàng Phương | Research & Development |
-| Nguyễn Nam Thắng    | Research & Development |
-
-The team collaborates on:
-
-* Data preparation
-* Literature review
-* Feature engineering
-* Model development
-* Experimentation
-* Evaluation
-* Documentation
-
----
-
-## 22. Technologies
-
-The project primarily uses:
+## 9. Technologies
 
 * Python
-* Pandas
-* NumPy
 * Scikit-learn
-* LightGBM
 * XGBoost
-* PyTorch
+* LightGBM
 * Hugging Face Transformers
-* Matplotlib
-* Jupyter Notebook
-
-The external generation pipeline additionally uses API SDKs for supported LLM providers.
+* TF-IDF
+* LLM APIs
 
 ---
 
-## 23. Conclusion
+## 10. Objective
 
-This project investigates AI-generated essay detection from both a linguistic-feature perspective and a machine-learning perspective.
-
-The central focus is not only whether a text is classified as human or AI-generated, but also whether the detected patterns remain reliable across different datasets, topics, and writing conditions.
-
-By combining linguistic analysis, traditional machine learning, transformer-based models, and generalization evaluation, the project aims to provide a more comprehensive assessment of the capabilities and limitations of current AI-generated text detection methods.
+The objective of this project is to compare traditional machine learning and transformer-based approaches for detecting AI-generated essays and to investigate their ability to distinguish AI-generated text from human-written text.
