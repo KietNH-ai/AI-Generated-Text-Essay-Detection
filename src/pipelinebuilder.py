@@ -100,11 +100,11 @@ except ImportError:
 
 # Tên cột chuẩn của dự án
 STANDARD_COLUMNS = {
-    "text": "text_clean",
+    "text": "text",
     "label": "label",
     "source": "source",
     "prompt": "prompt_name",
-    "word_count": "word_count_clean"
+    "word_count": "word_count"
 }
 
 # Giá trị nhãn chuẩn
