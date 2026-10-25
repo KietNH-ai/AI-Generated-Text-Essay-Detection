@@ -1,0 +1,14 @@
+openai
+python-dotenv
+pandas
+numpy
+tqdm
+scipy
+scikit-learn
+joblib
+torch
+transformers
+accelerate
+lightgbm
+xgboost
+requests
