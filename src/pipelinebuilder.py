@@ -425,7 +425,7 @@ class LinguisticFeatureExtractor(BaseEstimator, TransformerMixin):
         features = []
         for text in X:
             if not isinstance(text, str) or len(text.strip()) == 0:
-                features.append([0.0] * 9)
+                features.append([0.0] * 8)
                 continue
             features.append(self._extract_single(text))
 
@@ -435,42 +435,33 @@ class LinguisticFeatureExtractor(BaseEstimator, TransformerMixin):
         sentences = re.split(r'[.!?]+', text)
         sentences = [s.strip() for s in sentences if s.strip()]
         num_sentences = max(len(sentences), 1)
-
         words = re.findall(r'\b[a-zA-Z0-9]+\b', text.lower())
         num_words = max(len(words), 1)
         unique_words = set(words)
-
         sentence_lengths = [len(re.findall(r'\b\w+\b', s)) for s in sentences]
         sentence_lengths = [l for l in sentence_lengths if l > 0] or [1]
-
         avg_sentence_length = np.mean(sentence_lengths)
-        sentence_length_std = np.std(sentence_lengths)
+        burstiness = np.std(sentence_lengths)
         avg_word_length = np.mean([len(w) for w in words]) if words else 0.0
-        ttr = len(unique_words) / num_words
-
-        complexity_markers = len(re.findall(r'[,;:—\-]', text))
-        avg_complexity = complexity_markers / num_sentences
-
+        lexical_diversity = len(unique_words) / num_words
         function_word_count = sum(1 for w in words if w in self.stop_words)
         function_word_ratio = function_word_count / num_words
-        content_word_ratio = 1.0 - function_word_ratio
-
-        punctuation_count = len(re.findall(r'[.!?,;:—\-]', text))
-        punctuation_density = punctuation_count / num_words
-
-        doc_length_log = np.log1p(num_words)
+        punctuation_count = len(re.findall(r'[.!?,;:]', text))
+        punctuation_ratio = punctuation_count / num_words
+        word_count = num_words
+        sentence_count = len(sentences)
 
         return [
-            avg_sentence_length, sentence_length_std, avg_word_length,
-            ttr, avg_complexity, function_word_ratio, content_word_ratio,
-            punctuation_density, doc_length_log
+            avg_sentence_length, burstiness, avg_word_length,
+            lexical_diversity, word_count, sentence_count,
+            punctuation_ratio, function_word_ratio
         ]
 
     def get_feature_names(self) -> List[str]:
         return [
-            "avg_sentence_length", "sentence_length_std", "avg_word_length",
-            "ttr", "avg_complexity", "function_word_ratio", "content_word_ratio",
-            "punctuation_density", "doc_length_log"
+            "avg_sentence_length", "burstiness", "avg_word_length",
+            "lexical_diversity", "word_count", "sentence_count",
+            "punctuation_ratio", "function_word_ratio"
         ]
 
     def get_feature_names_out(self, input_features=None) -> np.ndarray:
