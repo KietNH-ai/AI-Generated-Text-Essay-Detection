@@ -1,0 +1,40 @@
+{
+  "total_samples": 44818,
+  "label_distribution": {
+    "Human (0)": 27343,
+    "AI-generated (1)": 17475
+  },
+  "num_prompts": 15,
+  "num_sources": 17,
+  "sources_with_one_label": 16,
+  "median_word_count": {
+    "Human (0)": 388.0,
+    "AI-generated (1)": 334.0
+  },
+  "top_discriminative_features": [
+    "avg_word_length",
+    "punctuation_ratio",
+    "function_word_ratio",
+    "burstiness",
+    "word_count"
+  ],
+  "feature_correlation_with_label": {
+    "avg_word_length": 0.518,
+    "punctuation_ratio": 0.455,
+    "function_word_ratio": -0.4182,
+    "burstiness": -0.2803,
+    "word_count": -0.2616
+  },
+  "figures_saved": [
+    "03_linguistic_features_boxplot.png",
+    "04_feature_correlation_heatmap.png",
+    "05_label_by_source.png",
+    "06_label_by_prompt.png",
+    "07_top_Bigram.png",
+    "07_top_Unigram.png",
+    "cleaned_label_prompt_distribution.png",
+    "cleaned_text_length_by_label.png",
+    "raw_label_prompt_dist.png",
+    "raw_text_length_boxplot.png"
+  ]
+}
