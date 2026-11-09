@@ -40,3 +40,5 @@ python-dotenv>=1.0.1
 
 # --- Optional Web Demo ---
 streamlit>=1.38.0
+accelerate>=0.34.0
+sentencepiece>=0.2.0
