@@ -1,130 +1,33 @@
-# Pipeline 01 --- Linear Machine Learning Models
+# 01 — Linear and Classical ML Experiments
 
-## 1. Purpose
+## Purpose
 
-This branch evaluates linear machine-learning models for binary
-detection of human-written versus AI-generated essays.
+This document describes the implemented classical-model workflow. The executable experiment notebooks are `notebooks/04_important_feature.ipynb` and `notebooks/05_LG_RF_LGBM_XGB_SVM.ipynb`. The reusable pipeline API in `src/pipelinebuilder.py` is a separate utility and is not the runner used by those notebooks.
 
-The branch is designed as a strong, interpretable baseline and is
-aligned with the project's first two research questions:
+## Data input
 
-1.  Which linguistic features (sentence length, lexical diversity,
-    perplexity) most clearly distinguish human-written vs LLM-generated
-    essays?
-2.  Which model (TF-IDF + LightGBM/XGBoost vs fine-tuned
-    DistilBERT/RoBERTa) detects AI-generated text most accurately?
+The shared path definitions are in `src/path.py`:
 
-## 2. Input
+- Raw input: `data/raw/raw_data.csv`
+- Cleaned data: `data/processed/processed_data.csv`
+- Feature-enriched data: `data/processed/data_with_features.csv`
 
-The branch receives the cleaned dataset produced by the common
-data-preparation pipeline.
+Notebook 05 reads the cleaned dataset and expects the engineered columns used in its experiment. The processed files are generated locally and are not present in every checkout; run notebook 02 first, and follow notebook 04/05 setup cells for the expected feature table.
 
-Primary fields:
+The task is binary classification, with `label=0` for human-written text and `label=1` for AI-generated text. The essay text and engineered numeric features are used as predictors.
 
--   `text`: original essay text.
--   `text_clean`: normalized text used for text representation.
--   `label`: binary target indicating Human / AI.
--   `word_count`: text-length feature.
+## Implemented experiments
 
-The exact source dataset used during development is the DAIGT V2
-training dataset.
+Notebook 04 investigates linguistic/stylometric features, including distribution comparisons and Random Forest feature analysis. Its feature definitions and displayed result tables are experiment-specific; do not treat its exploratory statistics as a causal explanation.
 
-## 3. Common preprocessing
+Notebook 05 compares Logistic Regression, Random Forest, LightGBM, XGBoost, and SVM. Its main representation combines word and bigram TF-IDF (up to 5,000 features) with scaled numeric features. The notebook uses a stratified 80/20 train/test split with a fixed seed and stratified five-fold cross-validation on the training portion. The held-out test portion is used for final metrics.
 
-Before entering a model branch, the data goes through:
+## Leakage and evaluation
 
-1.  Data understanding.
-2.  Exploratory data analysis.
-3.  Missing-value handling.
-4.  Removal of empty or extremely short texts.
-5.  Group-wise IQR outlier filtering on `word_count`.
-6.  Text normalization:
-    -   lowercase;
-    -   remove URLs;
-    -   remove email addresses;
-    -   remove HTML tags;
-    -   remove unsupported special characters;
-    -   normalize whitespace.
-7.  Duplicate removal using `text_clean`.
-8.  Final validation.
+Fit the vectorizer and feature scaler using training data only, then apply the fitted transforms to validation/test data. Keep the held-out test set out of model selection. Notebook 05 reports accuracy, precision, recall, F1, and ROC-AUC where the estimator provides a score. SVM uses its decision scores for ranking metrics.
 
-The cleaned data is then saved as `train_cleaned.csv`.
+`src/pipelinebuilder.py` exposes a configurable API (`fit`, `predict`, `predict_proba`, `evaluate`) and uses weighted precision/recall/F1 plus ROC-AUC. Its defaults and paths are not identical to notebook 05; cite the runner actually used when reporting results.
 
-## 4. Representation
+## Outputs
 
-The main classical representation is TF-IDF.
-
-Conceptually:
-
-`text_clean → TF-IDF vectorization → linear classifier`
-
-TF-IDF converts each essay into a numerical feature vector based on the
-importance of terms within the document and across the corpus.
-
-Additional linguistic features can be concatenated with the TF-IDF
-representation when required by the experiment, such as:
-
--   sentence length;
--   lexical diversity;
--   word count;
--   perplexity.
-
-## 5. Model
-
-The linear branch is intended for linear classifiers such as Logistic
-Regression.
-
-Typical flow:
-
-``` text
-Cleaned text
-    ↓
-Train / validation / test split
-    ↓
-TF-IDF
-    ↓
-Optional linguistic features
-    ↓
-Linear classifier
-    ↓
-Prediction
-    ↓
-Precision / Recall
-```
-
-The vectorizer and any learned preprocessing parameters must be fitted
-only on the training split to avoid data leakage.
-
-## 6. Evaluation
-
-The primary metrics selected for the project are:
-
--   **Precision** --- how many texts predicted as AI are actually AI.
--   **Recall** --- how many AI-generated texts are successfully
-    detected.
-
-Recall is especially important when the objective is to reduce missed
-AI-generated essays.
-
-The same evaluation protocol should be used across model branches so
-that the comparison is fair.
-
-## 7. Role in the overall research
-
-This branch provides the classical linear baseline.
-
-Its results are compared with tree-based models and transformer-based
-deep-learning models to determine whether more complex models provide a
-meaningful improvement.
-
-## 8. Expected output
-
-Each experiment should produce:
-
--   trained model;
--   validation/test predictions;
--   Precision;
--   Recall;
--   experiment configuration;
--   saved vectorizer/feature transformation when applicable;
--   results table for cross-model comparison.
+Notebook outputs and saved artifacts depend on the executed cells and local setup. Generated datasets are under `data/processed/`; plots and model artifacts may be written under the paths selected in the notebook. These generated artifacts are not guaranteed to be included in the repository.

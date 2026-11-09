@@ -1,247 +1,55 @@
-# Dataflow --- AI-Generated Essay Detection
+# 04 — Project Dataflow and Experiment Map
 
-## 1. Overview
+## Scope and source of truth
 
-The project uses a shared dataflow followed by three independent model
-branches.
+The project workflow is implemented primarily as numbered Jupyter notebooks. `src/path.py` defines shared project paths; `src/pipelinebuilder.py` provides a reusable pipeline API but is not the orchestration layer for every notebook. For exact parameters and outputs, use the executed notebook cells and their saved summaries.
 
-``` text
-                    ┌──────────────────────┐
-                    │   Raw Dataset        │
-                    │   DAIGT V2           │
-                    └──────────┬───────────┘
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │ Data Understanding   │
-                    │ + EDA                │
-                    └──────────┬───────────┘
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │ Data Cleaning        │
-                    │ - missing values     │
-                    │ - short text         │
-                    │ - outliers           │
-                    │ - duplicates          │
-                    └──────────┬───────────┘
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │ Text Normalization   │
-                    │ → text_clean         │
-                    └──────────┬───────────┘
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │ Validation           │
-                    │ Clean dataset        │
-                    └──────────┬───────────┘
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │ Train / Val / Test   │
-                    │ Split                │
-                    └──────────┬───────────┘
-                               │
-              ┌────────────────┼────────────────┐
-              │                │                │
-              ▼                ▼                ▼
-      ┌──────────────┐ ┌──────────────┐ ┌─────────────────┐
-      │ Linear ML    │ │ Tree-based   │ │ Deep Learning   │
-      │              │ │ ML           │ │ / Transformers  │
-      │ TF-IDF       │ │ RF / XGB /   │ │ DistilBERT /    │
-      │ + Linear     │ │ LightGBM     │ │ RoBERTa         │
-      └──────┬───────┘ └──────┬───────┘ └────────┬────────┘
-             │                │                  │
-             └────────────────┼──────────────────┘
-                              ▼
-                    ┌──────────────────────┐
-                    │ Predictions          │
-                    │ Human / AI           │
-                    └──────────┬───────────┘
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │ Evaluation           │
-                    │ Precision / Recall   │
-                    └──────────┬───────────┘
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │ Comparison +         │
-                    │ Research Analysis    │
-                    └──────────────────────┘
-```
+Current notebook sequence:
 
-## 2. Stage 1 --- Raw data
+1. `01_(1)_data_understanding.ipynb` — inspect the raw dataset.
+2. `01_(2)_visual_raw_data.ipynb` — raw-data visualizations.
+3. `02_data_cleanning.ipynb` — clean and save the processed table.
+4. `03_visual_cleaned_data.ipynb` — EDA and linguistic-feature summaries.
+5. `04_important_feature.ipynb` — RQ1 feature analysis and Random Forest experiments.
+6. `05_LG_RF_LGBM_XGB_SVM.ipynb` — classical model comparison.
+7. `06_modernBERT_deBERTa.ipynb` and `07_DistilBERT_RoBERTa.ipynb` — transformer experiments.
+8. `08_RQ3_01_prepare_human_holdout.ipynb` — prepare RQ3 holdout and leakage-free training data.
+9. `09_RQ3_02_retrain_traditional_ML.ipynb` — retrain/evaluate classical models internally.
+10. `10_RQ3_03_retrain_ModernBERT_DeBERTa.ipynb` and `11_RQ3_04_retrain_DistilBERT_RoBERTa.ipynb` — retrain transformer models.
+11. `12_RQ3_06_merge_and_evaluate_external.ipynb` — assemble the external benchmark and evaluate frozen models.
 
-The development notebook uses the DAIGT V2 training dataset.
+RQ3 is a completed research workflow according to the project context, but its generated data, checkpoints, and result directory are not present in the current workspace snapshot. The notebook remains as a record/reproduction path and requires its input data and trained artifacts to run end to end.
 
-The core classification fields are the essay `text` and binary `label`.
+## Paths and generated artifacts
 
-## 3. Stage 2 --- Data understanding and EDA
+Shared constants in `src/path.py` resolve to:
 
-The initial analysis checks:
+- Raw data: `data/raw/raw_data.csv`
+- Processed table: `data/processed/processed_data.csv`
+- Feature-enriched table: `data/processed/data_with_features.csv`
+- Notebook figures: `result/fig/`
+- Notebook models: `result/model/`
 
--   dataset shape;
--   column names;
--   data types;
--   memory usage;
--   label distribution;
--   descriptive statistics;
--   source/model distribution when the `source` column exists.
+These files are generated locally and ignored/not guaranteed to be committed. In the current workspace, only the raw CSV is present under `data/`; processed tables, RQ3 benchmark files, and `result/` outputs must be restored or regenerated before running dependent notebooks. Some notebooks also support Colab/Drive paths and define their output folders internally.
 
-This stage describes the dataset before modifying it.
+`src/pipelinebuilder.py` has its own legacy output defaults (`results/` and `models/`), which differ from `src/path.py`'s `result/` paths. Do not assume its generated artifacts land in the notebook output directories.
 
-## 4. Stage 3 --- Data cleaning
+## Cleaning and features
 
-The current cleaning procedure contains:
+Notebook 02 reads the raw CSV, removes rows with missing text/label, cleans whitespace, drops very short essays, applies a label-wise IQR filter to word count (`k=3` in the cleaning cell), normalizes text into `text_clean`, removes duplicates on the cleaned text, and saves `processed_data.csv`. Confirm the actual executed cells before relying on this summary if the cleaning notebook changes.
 
-### Missing values
+Notebooks 03–05 perform EDA, feature analysis, and classical-model preparation. Feature definitions vary across the exploratory feature analysis and combined model experiment; use the relevant notebook's feature columns rather than assuming a single universal feature set.
 
-Rows missing either `text` or `label` are removed.
+## Evaluation design
 
-Text values are not imputed because missing essay content cannot be
-reliably reconstructed.
+The classical comparison in notebook 05 uses a stratified 80/20 train/test split with a fixed seed and five-fold stratified cross-validation on the training data. The transformer notebooks use an outer stratified 80/20 split, an inner validation split for Stage A model/epoch selection, and Stage B retraining before final outer-test evaluation.
 
-### Empty and short texts
+The reusable API in `src/pipelinebuilder.py` has its own `evaluate` method and defaults. Its weighted precision/recall/F1 metrics should not be conflated with the positive-class metrics reported in the experiment notebooks.
 
-Whitespace is removed and text with fewer than 20 words is discarded.
+## RQ3 design
 
-`word_count` is used as a measurement for this filtering stage and is
-also retained as a potential model feature.
+RQ3 preparation isolates 1,000 human essays for external evaluation and builds training inputs that exclude this holdout. The retraining notebooks create fresh model artifacts; notebook 12 combines the holdout with 1,000 AI essays and evaluates frozen models. The benchmark must remain external to training, checkpoint selection, and threshold tuning. Interpret subgroup comparisons only when the required generator/source metadata is available.
 
-### Outliers
+## Reproducibility checklist
 
-Outliers are filtered using a group-wise IQR procedure on `word_count`,
-grouped by `label`.
-
-The current implementation uses:
-
-`k = 3`
-
-This is performed once; the pipeline should not apply an additional
-global outlier filter afterward.
-
-### Text normalization
-
-`text_clean` is created by:
-
--   converting text to lowercase;
--   removing URLs;
--   removing email addresses;
--   removing HTML tags;
--   retaining letters, numbers, whitespace and basic punctuation;
--   collapsing repeated whitespace.
-
-### Duplicates
-
-Duplicate essays are removed using:
-
-`text_clean`
-
-This catches duplicates that differ only through casing, spacing or
-other normalized formatting.
-
-## 5. Stage 4 --- Validation
-
-The cleaned dataset is validated to ensure:
-
--   no missing `text_clean`;
--   no duplicate `text_clean`;
--   both target classes remain;
--   label distribution is inspected again;
--   `word_count` statistics are inspected again.
-
-The cleaned data is then saved as:
-
-`train_cleaned.csv`
-
-## 6. Stage 5 --- Split
-
-The cleaned dataset is separated into training, validation and test data
-before model-specific learning.
-
-The exact split ratio should be kept consistent across experiments.
-
-No test-set information should be used for fitting transformations or
-selecting the final model.
-
-## 7. Stage 6 --- Three model branches
-
-### Branch A --- Linear ML
-
-``` text
-text_clean
-   ↓
-TF-IDF
-   ↓
-optional linguistic features
-   ↓
-linear classifier
-```
-
-### Branch B --- Tree-based ML
-
-``` text
-text_clean / engineered features
-   ↓
-numerical feature matrix
-   ↓
-Random Forest / XGBoost / LightGBM
-```
-
-### Branch C --- Deep Learning
-
-``` text
-text_clean
-   ↓
-Transformer tokenizer
-   ↓
-DistilBERT / RoBERTa
-   ↓
-fine-tuning
-```
-
-## 8. Stage 7 --- Evaluation
-
-All branches produce predictions on the same evaluation protocol.
-
-Primary metrics:
-
--   Precision;
--   Recall.
-
-This shared evaluation layer is necessary for a fair comparison.
-
-## 9. Stage 8 --- Research analysis
-
-The final results are used to address three research questions:
-
-1.  Which linguistic features most clearly distinguish human-written and
-    LLM-generated essays?
-2.  Which model family detects AI-generated text most accurately?
-3.  Does a model trained on one LLM retain its performance when
-    evaluated on text generated by other LLMs?
-
-The final analysis should distinguish between:
-
--   model performance;
--   feature-level evidence;
--   cross-LLM generalization;
--   possible false positives on polished human writing.
-
-## 10. Leakage control
-
-The following rule applies throughout the dataflow:
-
-> Anything that learns parameters from data must be fitted only on the
-> training set.
-
-This includes TF-IDF vocabulary/weights, scalers, feature-selection
-procedures, model parameters and any threshold-selection process.
-
-Validation data is used for model selection and tuning.
-
-The test set is reserved for final reporting.
+For a reproducible run, record the dataset version, notebook and cell configuration, random seed, feature set, split indices or manifests, model/tokenizer identifiers, epoch selection, threshold, and output artifact locations. Keep generated artifacts distinct from source inputs and report which metric averaging/positive class was used.
